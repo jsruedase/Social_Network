@@ -6,11 +6,12 @@ import networkx as nx
 
 
 class Persona:
-    def __init__(self, nombre: str, edad: int, localidad: str, afinidadHobbies: List[int]):
-        self.nombre=nombre
-        self.edad=edad
-        self.localidad=localidad
-        self.afinidadHobbies=afinidadHobbies
+    def __init__(self, id: int, nombre: str, edad: int, localidad: str, afinidadHobbies: List[int]):
+        self.id = id
+        self.nombre = nombre
+        self.edad = edad
+        self.localidad = localidad
+        self.afinidadHobbies = afinidadHobbies
         self.personaCoste: List[tuple[Persona, int]] = [] ##lista personas para añadir los vinculos
 
 
@@ -65,11 +66,13 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
 
 class RedSocial:
     def __init__(self):
-        self.personas = [] #Listado global de las personas en la red Social
-        
- 
+        self.personas = {} #Listado global de las personas en la red Social
+    
     def agregar_persona(self, persona):
-        self.personas.append(persona)
+        self.personas[persona.id] = persona
+    
+    def obtener_persona_por_id(self, id):
+        return self.personas.get(id, None)
 
 
 
@@ -140,11 +143,11 @@ def visualizar_red(red: RedSocial):
     G = nx.Graph()
 
     # Añadir nodos
-    for persona in red.personas:
+    for persona in red.personas.values():
         G.add_node(persona.nombre, label=persona.localidad)
 
     # Añadir aristas con pesos
-    for persona in red.personas:
+    for persona in red.personas.values():
         for vecino, coste in persona.personaCoste:
             if not G.has_edge(persona.nombre, vecino.nombre):
                 G.add_edge(persona.nombre, vecino.nombre, weight=coste)
@@ -176,23 +179,24 @@ def visualizar_red(red: RedSocial):
 # Ejemplo de uso
 # ---------------------------
 
-red = RedSocial()
+if __name__ == "__main__":
+    red = RedSocial()
 
-p1 = Persona("Oscar", 25, "Usaquen", [7, 5, 9, 3, 6])
-p2 = Persona("Luis", 27, "Usaquen", [6, 5, 8, 2, 7])
-p3 = Persona("Carlos", 40, "Fontibon", [1, 2, 3, 4, 5])
-p4 = Persona("Marta", 29, "Chapinero", [5, 5, 5, 5, 5])
-p5 = Persona("Elena", 35, "Chapinero", [8, 7, 6, 5, 4])
+    p1 = Persona(1,"Oscar", 25, "Usaquen", [7, 5, 9, 3, 6])
+    p2 = Persona(2,"Luis", 27, "Usaquen", [6, 5, 8, 2, 7])
+    p3 = Persona(3,"Carlos", 40, "Fontibon", [1, 2, 3, 4, 5])
+    p4 = Persona(4,"Marta", 29, "Chapinero", [5, 5, 5, 5, 5])
+    p5 = Persona(5,"Elena", 35, "Chapinero", [8, 7, 6, 5, 4])
 
-for p in [p1, p2, p3, p4, p5]:
-    red.agregar_persona(p)
+    for p in [p1, p2, p3, p4, p5]:
+        red.agregar_persona(p)
 
-# Crear vínculos
-crearVinculo(p1, p2)
-crearVinculo(p2, p4)
-crearVinculo(p4, p5)
-crearVinculo(p1, p5)
-# p3 (Carlos) queda aislado
+    # Crear vínculos
+    crearVinculo(p1, p2)
+    crearVinculo(p2, p4)
+    crearVinculo(p4, p5)
+    crearVinculo(p1, p5)
+    # p3 (Carlos) queda aislado
 
-# Mostrar red
-visualizar_red(red)
+    # Mostrar red
+    visualizar_red(red)
