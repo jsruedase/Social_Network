@@ -3,6 +3,7 @@ import math
 import random
 import matplotlib.pyplot as plt
 import networkx as nx
+from Algorithms import search
 
 
 class Persona:
@@ -14,6 +15,11 @@ class Persona:
         self.afinidadHobbies = afinidadHobbies
         self.personaCoste: List[tuple[Persona, int]] = [] ##lista personas para añadir los vinculos
 
+    def obtener_vecino_con_coste(self, cost: int) -> tuple['Persona', int]:
+        for vecino, coste in self.personaCoste:
+            if coste == cost:
+                return (vecino, coste)
+        return None
 
 
 def crearVinculo(p1: Persona, p2: Persona) -> int: 
@@ -62,7 +68,8 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
     # Escalamos a 0 a 100
     return int(round(afinidad * 100))
 
-
+def road_heuristic(state, problem):
+    return calcularAfinidad(state, problem.estadoObjetivo)
 
 class RedSocial:
     def __init__(self):
@@ -87,57 +94,93 @@ class ProblemaCamino:
         self.estadoInicial=estadoInicial
         self.estadoObjetivo=estadoObjetivo
         self.existeCamino=True #Suponemos verdero inicialmente 
+        self.expanded = 0
 
+    def getStartState(self) -> Persona:
+        return self.estadoInicial
+    
     def isGoalState(self, persona: Persona) -> bool:
         return persona == self.estadoObjetivo
-    
-    def sucesores(self, persona:Persona)->List[tuple[Persona, int]]:
-        return persona.personaCoste
-    
 
+    def getSuccessors(self, persona: Persona) -> List[tuple[Persona, int]]:
+        self.expanded += 1
+        return persona.personaCoste
+
+    def getCostOfActions(self, actions: List[tuple[Persona, int]]) -> int:
+        totalCost = 0
+        for action in actions:
+            totalCost += action[1]
+        return totalCost
+
+        
+        
+    
 class ProblemaSugerirAmistad:
     """
     Clase encargada de manejar lo relativo al problema de sugerir amistad
     """
 
-    def __init__(self, red:RedSocial, estadoInicial: Persona, estadoObjetivo: Persona ):
+    def __init__(self, red:RedSocial, estadoInicial: Persona, estadoObjetivo: Persona, afinidad_minima: int=0, dificultad_relacion: int=1):
         self.red=red
         self.estadoInicial=estadoInicial
-        self.estadoObjetivo=estadoObjetivo
+        self.estadoObjetivo = estadoObjetivo
+        self.afinidad_minima=afinidad_minima
+        self.dificultad_relacion = dificultad_relacion
     
-    """
-    Para sugerir amistad se simula la creacion de un vinculo entre todas las person
-    y se repite el proceso de busqueda de mejor camino
-    se da por sugerencia aquella que se usó para el camino??????
-    """
-
-##Como reconstruir el camino???  Conjunto de acciones, como se hace??? se guarda como [persona 1-> persona 2]+ [persona2->persona3]?? esto donde se guarda
-
-
-"""
-
-    IMPORTANTEEEEEEEEEEEEEEEE
-        -Como manejar la sugerencia de amistad
-        -Reconstruccion de camino acciones para llegar
-        -Ajustar pesos
-        -Definir listado de hobbies
-        -Crear ejemplos base
-        -Crear ejemplos random
-        -Complejidad?? Tiempo memoria
-        -BFS, DFS, UCS, A*
-        -Ajustar visualizador para ver mejor los grafos
-        -
-        -
-        -
-        -
-
-
-
-
-
-"""
+    def getStartState(self) -> Persona:
+        return self.estadoObjetivo
     
+    def isGoalState(self, persona: Persona) -> bool:
+        
+        if persona == self.estadoObjetivo:
+            return False
 
+        #and calcularAfinidad(persona, self.estadoInicial) >  self.dificultad_relacion * calcularAfinidad(self.estadoInicial, self.estadoObjetivo)
+        if calcularAfinidad(persona, self.estadoInicial) > self.afinidad_minima and calcularAfinidad(persona, self.estadoInicial) >  self.dificultad_relacion * calcularAfinidad(self.estadoInicial, self.estadoObjetivo):
+            return True
+
+        return False
+        
+    def getSuccessors(self, persona: Persona) -> List[tuple[Persona, int]]:
+        return persona.personaCoste
+    
+    def getCostOfActions(self, actions: List[tuple[Persona, int]]) -> int:
+        totalCost = 0
+        for action in actions:
+            totalCost += action[1]
+        return totalCost
+
+
+def SugerirAmistad(P: ProblemaSugerirAmistad):
+    """
+    Funcion para sugerir amistad entre dos personas. 
+    """
+    sugerencia = search.breadthFirstSearch(P)
+    print(sugerencia)
+    if len(sugerencia) == 0:
+        ans= P.estadoObjetivo
+    else:
+        ans= sugerencia[-1][0].obtener_vecino_con_coste(sugerencia[-1][1])[0]
+    
+    return ans
+        
+def Camino(P: ProblemaCamino):
+    """
+    Funcion para determinar si existe camino entre dos personas
+    """
+    camino = search.aStarSearch(P, heuristic = road_heuristic)
+
+    if len(camino) == 0:
+        P.existeCamino=False
+        P2 = ProblemaSugerirAmistad(P.red, P.estadoInicial, P.estadoObjetivo, 0)
+        ans = SugerirAmistad(P2)
+        return ans
+    else:
+        return camino
+    
+# ---------------------------
+# Visualización de la red social
+# ---------------------------
 
 def visualizar_red(red: RedSocial):
     G = nx.Graph()
@@ -195,8 +238,16 @@ if __name__ == "__main__":
     crearVinculo(p1, p2)
     crearVinculo(p2, p4)
     crearVinculo(p4, p5)
-    crearVinculo(p1, p5)
+    crearVinculo(p1, p4)
     # p3 (Carlos) queda aislado
 
-    # Mostrar red
+    problema_camino = ProblemaCamino(red, p1, p5)  # Buscar camino de Oscar a Elena
+    print("Buscando camino entre Oscar y Elena:")
+    ans = Camino(problema_camino)
+    
+    for paso in ans:
+        print(f"{paso[0].nombre} (Coste: {paso[1]})")
+    
     visualizar_red(red)
+    
+    

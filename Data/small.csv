@@ -99,3 +99,6 @@ id,nombre_apellido,edad,localidad,lista_numeros,conexiones
 97,Martina Cardenas,53,Rafael Uribe Uribe,"[4, 9, 5, 0, 6]","[]"
 98,Nicolas Molina,21,Ciudad Bolivar,"[0, 5, 1, 7, 3]","[]"
 99,Mia Navarro,40,Sumapaz,"[6, 1, 7, 3, 9]","[]"
+100,Juan Rueda,21,Suba,"[5, 1, 3, 7, 4]","[101]"
+101,Elsa Capunta,25,Soacha,"[8,3,6,1,3]","[102]"
+102,Elma Kinon,26,Usme,"[5,1,3,7,4]","[]"
