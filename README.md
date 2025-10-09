@@ -30,12 +30,8 @@ Se plantea una red social donde:
     - Hobbies representados en un diccionario con intensidad de interés.
 - Cada arista representa una amistad y está asociada a un **nivel de relación**, que indica la fuerza o cercanía de la amistad.
 
-El grafo es no dirigido. El costo de moverse entre dos personas está determinado por la afinidad entre las características que comparten, que se calcula con una función en la que entra como parámetro los hobbies y el gusto por estos. Entre más compartan hobbies y más cerca vivan, mayor será la relación de amistad y por ende menor el coste de pasar de un nodo a otro. Sin embargo esto no siempre ocurre fielmente a la realidad y es por esto que este valor será multiplicado por un entero k mayor o igual que 1 (y acotado), es decir:
+El grafo es no dirigido. El costo de moverse entre dos personas está determinado por la afinidad entre las características que comparten, que se calcula con una función en la que entra como parámetro los hobbies y el gusto por estos. Entre más compartan hobbies y más cerca vivan, mayor será la relación de amistad y por ende menor el coste de pasar de un nodo a otro. Se hace un promedio ponderado donde la edad vale el 40%, la localidad el 20% y la afinidad por los hobbies otro 40%. Sin embargo esto no siempre ocurre fielmente a la realidad y es por esto que este valor será multiplicado por un entero k mayor o igual que 1 (y acotado), es decir:
 
-$$
-cost(i,j) = \frac{k}{hobbbies(l_i, l_j)}
-
-$$
 
 ---
 
