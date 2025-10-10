@@ -4,6 +4,7 @@ import random
 import matplotlib.pyplot as plt
 import networkx as nx
 from Algorithms import search
+import numpy as np
 
 
 class Persona:
@@ -69,6 +70,12 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
     return int(round(afinidad * 100))
 
 def road_heuristic(state, problem):
+    """
+    
+    Esta heurística es admisible ya que nunca sobreestima el costo real hacia la solución
+    lo que hace es calcular la afinidad máxima posible, no mínima distancia y dado el 
+    contexto en el que se esta trabajando, esto permite que la solución sea optima y eficiente
+    """
     return calcularAfinidad(state, problem.estadoObjetivo)
 
 class RedSocial:
@@ -183,39 +190,74 @@ def Camino(P: ProblemaCamino):
 # ---------------------------
 
 def visualizar_red(red: RedSocial):
+
     G = nx.Graph()
 
-    # Añadir nodos
+    # nodos
     for persona in red.personas.values():
         G.add_node(persona.nombre, label=persona.localidad)
 
-    # Añadir aristas con pesos
+    # pesos
     for persona in red.personas.values():
         for vecino, coste in persona.personaCoste:
             if not G.has_edge(persona.nombre, vecino.nombre):
                 G.add_edge(persona.nombre, vecino.nombre, weight=coste)
 
-    # Layout espacioso
-    pos = nx.spring_layout(G, seed=42, k=30)
+    if len(G) == 0:
+        print("No hay nodos para mostrar.")
+        return
 
-    plt.figure(figsize=(8,6))
+    componentes = [G.subgraph(c).copy() for c in nx.connected_components(G)]
+    n_comp = len(componentes)
+    max_nodos = max(len(c) for c in componentes)
 
-    # Nodos
-    nx.draw_networkx_nodes(G, pos, node_size=1800, node_color="lightblue", edgecolors="black")
+    posiciones = {}
+    base_offset = 6.0
+    angulo = 0
 
-    # Etiquetas de nodos
-    nx.draw_networkx_labels(G, pos, font_size=12, font_color="black", font_weight="bold")
+    for i, comp in enumerate(componentes):
+        n = len(comp)
+        factor = 0.5 + 1.8 * (n / max_nodos)
+        escala = 2.0 * factor
+        k_val = (1.0 / math.sqrt(n)) * factor * 0.9
 
-    # Aristas
-    nx.draw_networkx_edges(G, pos, width=2.5, edge_color="darkgray")
+        pos_local = nx.spring_layout(comp, seed=42, k=k_val, iterations=150, scale=escala)
 
-    # Etiquetas de aristas (coste)
+        offset_x = (base_offset * (1.5 if n > max_nodos * 0.7 else 1.0)) * np.cos(angulo)
+        offset_y = (base_offset * (1.5 if n > max_nodos * 0.7 else 1.0)) * np.sin(angulo)
+        angulo += 2 * np.pi / n_comp
+
+        for nodo, (x, y) in pos_local.items():
+            posiciones[nodo] = np.array([x + offset_x, y + offset_y])
+
+    fig = plt.figure(figsize=(16, 9))
+    mng = plt.get_current_fig_manager()
+    try:
+        mng.window.state('zoomed')
+    except:
+        try:
+            mng.resize(*mng.window.maxsize())
+        except:
+            pass
+
+    nx.draw_networkx_nodes(G, posiciones, node_size=1800, node_color="lightblue", edgecolors="black")
+    nx.draw_networkx_labels(G, posiciones, font_size=12, font_color="black", font_weight="bold")
+    nx.draw_networkx_edges(G, posiciones, width=2.3, edge_color="gray", alpha=0.7, connectionstyle="arc3,rad=0.07")
+
     edge_labels = nx.get_edge_attributes(G, "weight")
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=10, font_color="red")
+    nx.draw_networkx_edge_labels(G, posiciones, edge_labels=edge_labels, font_size=10, font_color="red")
 
-    plt.title("Red Social - Personas y Afinidades", fontsize=14)
+    plt.title("Red Social - Personas y Afinidades", fontsize=14, fontweight="bold")
     plt.axis("off")
+    plt.tight_layout()
     plt.show()
+
+
+
+
+
+
+
 
 
 # ---------------------------
@@ -223,31 +265,34 @@ def visualizar_red(red: RedSocial):
 # ---------------------------
 
 if __name__ == "__main__":
-    red = RedSocial()
+    red1 = RedSocial()
 
-    p1 = Persona(1,"Oscar", 25, "Usaquen", [7, 5, 9, 3, 6])
-    p2 = Persona(2,"Luis", 27, "Usaquen", [6, 5, 8, 2, 7])
-    p3 = Persona(3,"Carlos", 40, "Fontibon", [1, 2, 3, 4, 5])
-    p4 = Persona(4,"Marta", 29, "Chapinero", [5, 5, 5, 5, 5])
-    p5 = Persona(5,"Elena", 35, "Chapinero", [8, 7, 6, 5, 4])
+    nombres = [
+        ("Ana", 22, "Usaquén"),
+        ("Luis", 24, "Usaquén"),
+        ("Marta", 25, "Chapinero"),
+        ("Julián", 23, "Chapinero"),
+        ("Sofía", 21, "Suba"),
+        ("Andrés", 27, "Usme"),
+        ("Camila", 26, "Suba"),
+        ("Carlos", 24, "Usme"),
+        ("Elena", 25, "Usaquén")
+    ]
 
-    for p in [p1, p2, p3, p4, p5]:
-        red.agregar_persona(p)
+    for i, (n, e, l) in enumerate(nombres, start=1):
+        red1.agregar_persona(Persona(i, n, e, l, [random.randint(1,10) for _ in range(5)]))
 
     # Crear vínculos
-    crearVinculo(p1, p2)
-    crearVinculo(p2, p4)
-    crearVinculo(p4, p5)
-    crearVinculo(p1, p4)
-    # p3 (Carlos) queda aislado
+    crearVinculo(red1.personas[1], red1.personas[2])
+    crearVinculo(red1.personas[2], red1.personas[3])
+    crearVinculo(red1.personas[3], red1.personas[4])
+    crearVinculo(red1.personas[4], red1.personas[5])
+    crearVinculo(red1.personas[1], red1.personas[6])
+    crearVinculo(red1.personas[5], red1.personas[7])
+    crearVinculo(red1.personas[8], red1.personas[9])
+    crearVinculo(red1.personas[7], red1.personas[8])
+    crearVinculo(red1.personas[2], red1.personas[9])
 
-    problema_camino = ProblemaCamino(red, p1, p5)  # Buscar camino de Oscar a Elena
-    print("Buscando camino entre Oscar y Elena:")
-    ans = Camino(problema_camino)
-    
-    for paso in ans:
-        print(f"{paso[0].nombre} (Coste: {paso[1]})")
-    
-    visualizar_red(red)
-    
+    visualizar_red(red1)
+
     
