@@ -133,6 +133,9 @@ def road_heuristic(state, problem):
     """
     return calcularAfinidad(state, problem.estadoObjetivo)
 
+def nullHeuristic(state, problem=None):
+    return 0
+
 class RedSocial:
     def __init__(self):
         self.personas = {} #Listado global de las personas en la red Social
@@ -188,6 +191,7 @@ class ProblemaSugerirAmistad:
         self.estadoObjetivo = estadoObjetivo
         self.afinidad_minima=afinidad_minima
         self.dificultad_relacion = dificultad_relacion
+        self.expanded = 0
     
     def getStartState(self) -> Persona:
         return self.estadoObjetivo
@@ -204,6 +208,7 @@ class ProblemaSugerirAmistad:
         return False
         
     def getSuccessors(self, persona: Persona) -> List[tuple[Persona, int]]:
+        self.expanded += 1
         return persona.personaCoste
     
     def getCostOfActions(self, actions: List[tuple[Persona, int]]) -> int:
@@ -337,15 +342,15 @@ if __name__ == "__main__":
     red1 = RedSocial()
 
     nombres = [
-        ("Ana", 22, "Usaquén"),
-        ("Luis", 24, "Usaquén"),
+        ("Ana", 22, "Usaquen"),
+        ("Luis", 24, "Usaquen"),
         ("Marta", 25, "Chapinero"),
         ("Julián", 23, "Chapinero"),
         ("Sofía", 21, "Suba"),
         ("Andrés", 27, "Usme"),
         ("Camila", 26, "Suba"),
         ("Carlos", 24, "Usme"),
-        ("Elena", 25, "Usaquén")
+        ("Elena", 25, "Usaquen")
     ]
 
     for i, (n, e, l) in enumerate(nombres, start=1):

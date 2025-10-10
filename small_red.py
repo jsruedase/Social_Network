@@ -7,7 +7,7 @@ red_small = RedSocial()
 personas = {}  # Diccionario para acceder por ID
 
 # Primera pasada: cargar personas
-with open('small.csv', newline='', encoding='utf-8') as archivo:
+with open('Data/small.csv', newline='', encoding='utf-8') as archivo:
     lector = csv.reader(archivo)
     next(lector)
     for fila in lector:
@@ -24,7 +24,7 @@ with open('small.csv', newline='', encoding='utf-8') as archivo:
             pass
 
 # Segunda pasada: crear vínculos
-with open('small.csv', newline='', encoding='utf-8') as archivo:
+with open('Data/small.csv', newline='', encoding='utf-8') as archivo:
     lector = csv.reader(archivo)
     next(lector)
     for fila in lector:
