@@ -55,7 +55,8 @@ COORDS = {
     "La Candelaria": (4.6000, -74.0750),
     "Rafael Uribe Uribe": (4.5800, -74.1000),
     "Ciudad Bolivar": (4.5800, -74.1500),
-    "Sumapaz": (4.3000, -74.2000)
+    "Sumapaz": (4.3000, -74.2000),
+    "Soacha": (4.5860, -74.2144)
 }
 
 
@@ -320,3 +321,4 @@ if __name__ == "__main__":
     
 
     
+
