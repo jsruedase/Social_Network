@@ -231,7 +231,21 @@ def Camino(P: ProblemaCamino):
         return ans
     else:
         return camino
-    
+        
+def Camino_naive(P: ProblemaCamino):
+    """
+    Funcion para determinar si existe camino entre dos personas
+    """
+    camino = search.aStarSearch(P, heuristic = nullHeuristic )
+
+    if len(camino) == 0:
+        P.existeCamino=False
+        P2 = ProblemaSugerirAmistad(P.red, P.estadoInicial, P.estadoObjetivo, 0)
+        ans = SugerirAmistad(P2)
+        return ans
+    else:
+        return camino
+
 # ---------------------------
 # Visualización de la red social
 # ---------------------------
@@ -304,4 +318,5 @@ if __name__ == "__main__":
     
     visualizar_red(red)
     
+
     
