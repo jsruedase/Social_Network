@@ -199,3 +199,6 @@ id,nombre_apellido,edad,localidad,lista_numeros,conexiones
 197,Laura Ibarra,18,Rafael Uribe Uribe,"[7, 2, 5, 0, 3]","[]"
 198,Juan Jose Marin,61,Ciudad Bolivar,"[3, 8, 1, 6, 9]","[]"
 199,Agustina Vega,40,Sumapaz,"[9, 4, 7, 2, 5]","[]"
+200,David Sanchez,20,Fontibon,"[4, 5, 8, 2, 0]","[201]"
+201,Andres Duque,21,Chapinero,"[3, 1, 4, 8, 0]","[202]"
+202,James Rodriguez,38,Teusaquillo,"[1, 7, 9, 0, 3]","[]"

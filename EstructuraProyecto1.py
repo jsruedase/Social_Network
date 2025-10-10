@@ -31,9 +31,61 @@ def crearVinculo(p1: Persona, p2: Persona) -> int:
     """
     afinidadPersonas=calcularAfinidad(p1,p2)
     n=random.randint(2, 10)
-    coste=afinidadPersonas*n
+    coste=(afinidadPersonas)*n
     p1.personaCoste.append((p2, coste))
     p2.personaCoste.append((p1, coste))
+
+
+COORDS = {
+    "Usaquen": (4.7489, -74.0324),
+    "Chapinero": (4.6603, -74.0640),
+    "Santa Fe": (4.6070, -74.0700),
+    "San Cristobal": (4.5820, -74.0650),
+    "Usme": (4.5700, -74.1100),
+    "Tunjuelito": (4.5930, -74.1000),
+    "Bosa": (4.6200, -74.1700),
+    "Kennedy": (4.6400, -74.1400),
+    "Fontibon": (4.6800, -74.1450),
+    "Engativa": (4.7100, -74.1200),
+    "Suba": (4.7580, -74.0900),
+    "Barrios Unidos": (4.6900, -74.0800),
+    "Teusaquillo": (4.6500, -74.0900),
+    "Los Martires": (4.6000, -74.0750),
+    "Antonio Narino": (4.6000, -74.1000),
+    "Puente Aranda": (4.6300, -74.1100),
+    "La Candelaria": (4.6000, -74.0750),
+    "Rafael Uribe Uribe": (4.5800, -74.1000),
+    "Ciudad Bolivar": (4.5800, -74.1500),
+    "Sumapaz": (4.3000, -74.2000),
+    "Soacha": (4.5860, -74.2144)
+}
+
+
+
+
+def distancialocalidad(loc1: str, loc2: str) -> float:
+    """
+    Calcula la distancia aproximada (en km) entre dos localidades de Bogotá
+    usando coordenadas predefinidas.
+    """
+    loc1, loc2 = loc1.title(), loc2.title()
+
+    if loc1 not in COORDS or loc2 not in COORDS:
+        raise ValueError(f"Localidad desconocida: {loc1} o {loc2}")
+    
+    lat1, lon1 = COORDS[loc1]
+    lat2, lon2 = COORDS[loc2]
+    
+    # Fórmula de Haversine
+    R = 6371  # radio terrestre 
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1))*math.cos(math.radians(lat2))*math.sin(dlon/2)**2
+    c = 2*math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    distancia = R*c
+    
+    return round(distancia, 2)
+
 
 
 
@@ -43,6 +95,8 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
     Edad: entre mas cercana mas afinidad
     Localidad: si es la misma extra, aun no con distancia
     Hobbies: Distancia euclidea en R^5 
+
+    Afinidad inversa entre menor el valor mas similares son
     """
 
     # Pesos de cada atributo AJUSTAR
@@ -55,7 +109,8 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
     puntajeEdad = 1 - min(1, diferenciaEdad)  
 
     #  Localidad 
-    puntajeLocalidad = 1 if p1.localidad == p2.localidad else 0
+    dist = distancialocalidad(p1.localidad, p2.localidad)
+    puntajeLocalidad = max(0, 1 - dist / 20)
 
     #  Hobbies 
     # Usamos distancia euclídea normalizada
@@ -67,7 +122,7 @@ def calcularAfinidad(p1: Persona, p2: Persona) -> int:
     afinidad = (PESO_EDAD*puntajeEdad  +PESO_LOCALIDAD*puntajeLocalidad +  PESO_HOBBIES*puntajeHobbies)
 
     # Escalamos a 0 a 100
-    return int(round(afinidad * 100))
+    return 100-int(round(afinidad * 100))
 
 def road_heuristic(state, problem):
     """
@@ -184,7 +239,21 @@ def Camino(P: ProblemaCamino):
         return ans
     else:
         return camino
-    
+        
+def Camino_naive(P: ProblemaCamino):
+    """
+    Funcion para determinar si existe camino entre dos personas
+    """
+    camino = search.aStarSearch(P, heuristic = nullHeuristic )
+
+    if len(camino) == 0:
+        P.existeCamino=False
+        P2 = ProblemaSugerirAmistad(P.red, P.estadoInicial, P.estadoObjetivo, 0)
+        ans = SugerirAmistad(P2)
+        return ans
+    else:
+        return camino
+
 # ---------------------------
 # Visualización de la red social
 # ---------------------------
@@ -296,3 +365,6 @@ if __name__ == "__main__":
     visualizar_red(red1)
 
     
+
+    
+
