@@ -74,3 +74,48 @@ En el objetivo de la sugerencia de amistad, se debe verificar si ya se visitaron
 ## 7. Resultados
 
 Se medirán en ambos problemas el número de nodos expandidos, los costos de las rutas encontradas (si hay) y el tiempo de ejecución, variando el número de personas del grafo y viendo qué sucede si el grafo es denso o disperso para evaluar la eficiencia de los algoritmos implementados.
+
+Red Pequeña:
+
+| Algoritmo | Camino encontrado                                                                | Nodos expandidos | Tiempo de ejecución (s) |
+| --------- | -------------------------------------------------------------------------------- | ---------------- | ----------------------- |
+| **A***    | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 21               | 0.001303                |
+| **UCS**   | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 39               | 0.000300                |
+
+Sugerencia de amistad:
+
+Nodo inicial: Juan Rueda
+Sugerencia obtenida: Sebastián Díaz
+Nodos expandidos: 11
+Tiempo de ejecución: 0.000524 s
+
+Red Mediana:
+
+| Algoritmo | Camino encontrado                                                     | Nodos expandidos | Tiempo de ejecución (s) |
+| --------- | --------------------------------------------------------------------- | ---------------- | ----------------------- |
+| **A***    | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 78               | 0.007395                |
+| **UCS**   | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 145              | 0.001174                |
+
+Sugerencia de amistad:
+Nodo inicial: Andrés Duque
+Sugerencia obtenida: Alejandro Flores
+Nodos expandidos: 28
+Tiempo de ejecución: 0.001504 s
+
+En cuanto al tiempo de ejecución, los resultados son coherentes con el comportamiento esperado de ambos algoritmos.
+
+En la red pequeña, UCS fue ligeramente más rápido (0.0003 s vs. 0.0013 s), lo cual es razonable, ya que el cálculo de la heurística en A* puede representar una carga adicional cuando el tamaño del problema es reducido.
+
+En la red mediana, A* también presentó un mayor tiempo de ejecución (0.0074 s vs. 0.0012 s), lo que concuerda con su naturaleza: este algoritmo realiza evaluaciones heurísticas adicionales que, aunque aumentan el tiempo, permiten expandir menos nodos y encontrar el camino óptimo de manera más eficiente en términos de exploración.
+
+El módulo de SugerirAmistad busca candidatos de conexión basándose en medidas de afinidad dentro de la red.
+En la red pequeña, el sistema exploró 11 nodos y sugirió conectar a Juan Rueda con Sebastián Díaz.
+En la red mediana, exploró 28 nodos y sugirió a Alejandro Flores como mejor conexión para Andrés Duque.
+En ambos casos, el tiempo de ejecución fue muy bajo (del orden de milisegundos), lo que demuestra que el algoritmo es eficiente y escalable incluso con un crecimiento considerable del tamaño de la red.
+
+---
+## 8. Conclusiones
+
+1) A* y UCS encuentran caminos óptimos, pero A* expande menos nodos gracias al uso de una heurística informada.
+2) La heurística utilizada es efectiva y consistente, guiando la búsqueda hacia las soluciones óptimas.
+3) El algoritmo de sugerencia de amistad funciona correctamente, con tiempos de ejecución bajos y una exploración controlada, lo cual es deseable en sistemas de recomendación.
