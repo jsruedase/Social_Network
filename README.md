@@ -119,3 +119,26 @@ En ambos casos, el tiempo de ejecución fue muy bajo (del orden de milisegundos)
 1) A* y UCS encuentran caminos óptimos, pero A* expande menos nodos gracias al uso de una heurística informada.
 2) La heurística utilizada es efectiva y consistente, guiando la búsqueda hacia las soluciones óptimas.
 3) El algoritmo de sugerencia de amistad funciona correctamente, con tiempos de ejecución bajos y una exploración controlada, lo cual es deseable en sistemas de recomendación.
+
+---
+## 9. Ejemplos 9, 10 y 11 personas
+### Ejemplo 9 personas
+**Antes:** 
+<img width="1872" height="930" alt="image" src="https://github.com/user-attachments/assets/7b80382e-e22a-4f0c-8c15-661ff33d54c2" />
+
+**Después:** 
+<img width="1744" height="885" alt="image" src="https://github.com/user-attachments/assets/c65cba5e-9bfc-4d6a-a1e9-3953712dcfec" />
+
+### Ejemplos 10 personas
+**Antes:** 
+<img width="1855" height="876" alt="image" src="https://github.com/user-attachments/assets/2a01ca71-5994-4b88-b38b-e679f906a8c2" />
+
+**Después:** 
+<img width="1823" height="876" alt="image" src="https://github.com/user-attachments/assets/7a071107-32b5-4e57-bba5-fae1fcc7ff86" />
+
+### Ejemplos 11 personas
+**Antes:**
+<img width="1822" height="881" alt="image" src="https://github.com/user-attachments/assets/b308344a-cc4e-4120-b7f3-30b1ea12aeef" />
+
+**Después:** 
+<img width="1832" height="920" alt="image" src="https://github.com/user-attachments/assets/ad63ffd5-d74b-4cda-9f31-5f8ece67f0eb" />
