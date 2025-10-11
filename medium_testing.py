@@ -14,6 +14,7 @@ for paso in ans:
 
 print(f"Nodos expandidos usando heurística: {ProblemaCamino_medium.expanded}")
 print(f"Tiempo de ejecución (A*): {end_time - start_time:.6f} segundos")
+ProblemaCamino_medium.expanded=0
 
 start_time = time.perf_counter()
 ans_naive = Camino_naive(ProblemaCamino_medium)
