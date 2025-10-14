@@ -79,8 +79,8 @@ Red Pequeña:
 
 | Algoritmo | Camino encontrado                                                                | Nodos expandidos | Tiempo de ejecución (s) |
 | --------- | -------------------------------------------------------------------------------- | ---------------- | ----------------------- |
-| **A***    | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 21               | 0.001303                |
-| **UCS**   | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 39               | 0.000300                |
+| **A***    | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 27               | 0.001303                |
+| **UCS**   | Alejandro Vargas → Elena Beltrán → Lucas Pineda → Matías Moreno → Adrián Cabrera | 30               | 0.000300                |
 
 Sugerencia de amistad:
 
@@ -93,8 +93,8 @@ Red Mediana:
 
 | Algoritmo | Camino encontrado                                                     | Nodos expandidos | Tiempo de ejecución (s) |
 | --------- | --------------------------------------------------------------------- | ---------------- | ----------------------- |
-| **A***    | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 78               | 0.007395                |
-| **UCS**   | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 145              | 0.001174                |
+| **A***    | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 98               | 0.002395                |
+| **UCS**   | Sebastián Castro → Leonardo Rubio → Diego Castillo → Joaquín Castillo | 109              | 0.001174                |
 
 Sugerencia de amistad:
 Nodo inicial: Andrés Duque
@@ -106,7 +106,7 @@ En cuanto al tiempo de ejecución, los resultados son coherentes con el comporta
 
 En la red pequeña, UCS fue ligeramente más rápido (0.0003 s vs. 0.0013 s), lo cual es razonable, ya que el cálculo de la heurística en A* puede representar una carga adicional cuando el tamaño del problema es reducido.
 
-En la red mediana, A* también presentó un mayor tiempo de ejecución (0.0074 s vs. 0.0012 s), lo que concuerda con su naturaleza: este algoritmo realiza evaluaciones heurísticas adicionales que, aunque aumentan el tiempo, permiten expandir menos nodos y encontrar el camino óptimo de manera más eficiente en términos de exploración.
+En la red mediana, A* también presentó un mayor tiempo de ejecución (0.0024 s vs. 0.0011 s), lo que concuerda con su naturaleza: este algoritmo realiza evaluaciones heurísticas adicionales que, aunque aumentan el tiempo, permiten expandir menos nodos y encontrar el camino óptimo de manera más eficiente en términos de exploración.
 
 El módulo de SugerirAmistad busca candidatos de conexión basándose en medidas de afinidad dentro de la red.
 En la red pequeña, el sistema exploró 11 nodos y sugirió conectar a Juan Rueda con Sebastián Díaz.
